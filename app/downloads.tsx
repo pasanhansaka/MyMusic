@@ -1,3 +1,6 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
+import { CheckCircle, Trash2, Download } from 'lucide-react-native';
 import { getAllOfflineTracks, deleteOfflineTrack, OfflineTrack } from '../../src/services/OfflineService';
 import { usePlayerStore } from '../../src/store/usePlayerStore';
 import TrackPlayer, { Track } from 'react-native-track-player';

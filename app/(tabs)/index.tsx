@@ -1,4 +1,8 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, FlatList, Image } from 'react-native';
+import { Heart, Flame, Play, Disc } from 'lucide-react-native';
 import { searchMusic, getStreamUrl, YouTubeItem } from '../../src/api/musicApi';
+import { usePlayerStore } from '../../src/store/usePlayerStore';
 import TrackPlayer, { Track } from 'react-native-track-player';
 
 const CATEGORIES = ['Trending', 'Chill', 'Workout', 'Party', 'Focus', 'Sleep'];
