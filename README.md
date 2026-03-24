@@ -58,4 +58,4 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 
 ## ⚖️ License
 
-Private. Copyright © 2024 **Thorn Solution**. All Rights Reserved.
+Private. Copyright © 2026 **Thorn Solution**. All Rights Reserved.
