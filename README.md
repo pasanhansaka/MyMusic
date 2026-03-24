@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# 🎵 Thorn Music
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+[![React Native](https://img.shields.io/badge/React_Native-0.81-61DAFB?logo=react&logoColor=black)](https://reactnative.dev/)
+[![Expo](https://img.shields.io/badge/Expo-54.0-000020?logo=expo&logoColor=white)](https://expo.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/License-Private-red.svg)](https://github.com/pasanhansaka/MyMusic)
 
-## Get started
+**Thorn Music** is a premium, feature-rich music streaming application designed for the modern listener. Built with **React Native** and **Expo**, it delivers a seamless audio experience with a stunning dark-themed UI, intelligent search, and robust offline capabilities.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## ✨ Key Features
 
-2. Start the app
+- 🎧 **High-Quality Streaming**: Instant access to millions of tracks via YouTube integration.
+- 📂 **Library Management**: Organize your favorite artists, albums, and songs in one place.
+- ⬇️ **Offline Mode**: Download your favorite tracks and listen anywhere, even without an internet connection.
+- 📝 **Dynamic Lyrics**: Sing along with real-time lyrics support for every song.
+- 🔍 **Smart Discovery**: Explore trending music across various categories like Chill, Workout, and Focus.
+- 🎨 **Premium UI/UX**: A dark-mode first design optimized for focus and elegance using **NativeWind**.
+- ⚡ **Background Playback**: Keep the music going while you use other apps, powered by `react-native-track-player`.
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🛠️ Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Framework**: [React Native](https://reactnative.dev/) with [Expo SDK 54](https://expo.dev/)
+- **Navigation**: [Expo Router](https://docs.expo.dev/router/introduction/) (Link-based routing)
+- **Styling**: [NativeWind](https://www.nativewind.dev/) (Tailwind CSS for React Native)
+- **Audio Engine**: [React Native Track Player](https://react-native-track-player.js.org/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Icons**: [Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native)
+- **Storage**: [Expo File System](https://docs.expo.dev/versions/latest/sdk/filesystem/) & [Async Storage](https://react-native-async-storage.github.io/async-storage/)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## 📱 Screenshots
 
-When you're ready, run:
+| Home & Discovery | Player & Lyrics | Search |
+| :---: | :---: | :---: |
+| *(Add Screenshot)* | *(Add Screenshot)* | *(Add Screenshot)* |
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🚀 Future Roadmap
 
-## Learn more
+- [ ] Collaborative Playlists
+- [ ] AI-Powered Music Recommendations
+- [ ] Desktop Support (via Electron)
+- [ ] Equalizer and Audio presets
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🤝 Contributing
 
-## Join the community
+Contributions are welcome! Feel free to open an issue or submit a pull request if you have ideas to improve **Thorn Music**.
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## ⚖️ License
+
+Private. Copyright © 2024 **Thorn Solution**. All Rights Reserved.
