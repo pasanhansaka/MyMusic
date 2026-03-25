@@ -64,3 +64,12 @@ yarn-debug.*
 yarn-error.*
 .metro-health-check*
 
+# Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
