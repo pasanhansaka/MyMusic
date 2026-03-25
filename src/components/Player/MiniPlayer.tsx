@@ -2,19 +2,19 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, Pressable } from 'react-native';
 import { Play, Pause, SkipForward } from 'lucide-react-native';
 import { usePlayerStore } from '../../store/usePlayerStore';
-import TrackPlayer from 'react-native-track-player';
+import { pauseTrack, resumeTrack, playTrack } from '../../services/AudioService';
 
 const MiniPlayer = ({ onOpenNowPlaying }: { onOpenNowPlaying: () => void }) => {
-  const { currentTrack, isPlaying, setIsPlaying } = usePlayerStore();
+  const { currentTrack, isPlaying, setIsPlaying, setProgress, setDuration } = usePlayerStore();
 
   if (!currentTrack) return null;
 
   const togglePlayback = async () => {
     if (isPlaying) {
-      await TrackPlayer.pause();
+      await pauseTrack();
       setIsPlaying(false);
     } else {
-      await TrackPlayer.play();
+      await resumeTrack();
       setIsPlaying(true);
     }
   };
@@ -44,7 +44,18 @@ const MiniPlayer = ({ onOpenNowPlaying }: { onOpenNowPlaying: () => void }) => {
             <Play size={24} color="#FF0000" fill="#FF0000" />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>
+        <TouchableOpacity onPress={async () => {
+          const { nextTrack } = usePlayerStore.getState();
+          nextTrack();
+          const { currentTrack: newTrack } = usePlayerStore.getState();
+          if (newTrack) await playTrack(newTrack.url, (status) => {
+            if (status.isLoaded) {
+              setProgress(status.positionMillis / 1000);
+              setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+              setIsPlaying(status.isPlaying);
+            }
+          });
+        }}>
           <SkipForward size={24} color="#FFFFFF" />
         </TouchableOpacity>
       </View>

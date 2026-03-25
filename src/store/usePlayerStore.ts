@@ -1,5 +1,12 @@
 import { create } from 'zustand';
-import TrackPlayer, { Track } from 'react-native-track-player';
+export interface Track {
+  id: string;
+  url: string;
+  title: string;
+  artist: string;
+  artwork: string;
+  duration?: number;
+}
 
 interface PlayerState {
   currentTrack: Track | null;
@@ -39,8 +46,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setSleepTimer: (minutes: number | null) => {
     set({ sleepTimer: minutes });
     if (minutes) {
-      setTimeout(async () => {
-        await TrackPlayer.pause();
+      setTimeout(() => {
         set({ isPlaying: false, sleepTimer: null });
       }, minutes * 60000);
     }

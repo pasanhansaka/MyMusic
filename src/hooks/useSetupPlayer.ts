@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { setupPlayer } from '../services/TrackPlayerService';
+import { setupAudio } from '../services/AudioService';
 
 export const useSetupPlayer = () => {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -7,7 +7,7 @@ export const useSetupPlayer = () => {
   useEffect(() => {
     let unmounted = false;
     (async () => {
-      await setupPlayer();
+      await setupAudio();
       if (unmounted) return;
       setIsPlayerReady(true);
     })();

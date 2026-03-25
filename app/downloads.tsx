@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
 import { CheckCircle, Trash2, Download } from 'lucide-react-native';
-import { getAllOfflineTracks, deleteOfflineTrack, OfflineTrack } from '../../src/services/OfflineService';
-import { usePlayerStore } from '../../src/store/usePlayerStore';
-import TrackPlayer, { Track } from 'react-native-track-player';
+import { getAllOfflineTracks, deleteOfflineTrack, OfflineTrack } from '../src/services/OfflineService';
+import { usePlayerStore, Track } from '../src/store/usePlayerStore';
+import { playTrack } from '../src/services/AudioService';
 
 const DownloadsScreen = () => {
   const [downloads, setDownloads] = useState<OfflineTrack[]>([]);
-  const { setCurrentTrack, setQueue, setIsPlaying } = usePlayerStore();
+  const { setCurrentTrack, setQueue, setIsPlaying, setProgress, setDuration } = usePlayerStore();
 
   useEffect(() => {
     fetchDownloads();
@@ -28,9 +28,13 @@ const DownloadsScreen = () => {
     };
 
 
-    await TrackPlayer.reset();
-    await TrackPlayer.add([track]);
-    await TrackPlayer.play();
+    await playTrack(item.localUri, (status) => {
+      if (status.isLoaded) {
+        setProgress(status.positionMillis / 1000);
+        setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+        setIsPlaying(status.isPlaying);
+      }
+    });
     
     setCurrentTrack(track);
     setQueue([track]);

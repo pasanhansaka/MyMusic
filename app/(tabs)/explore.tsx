@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { Search as SearchIcon, Play } from 'lucide-react-native';
 import { searchMusic, getStreamUrl, YouTubeItem } from '../../src/api/musicApi';
-import { usePlayerStore } from '../../src/store/usePlayerStore';
-import TrackPlayer, { Track } from 'react-native-track-player';
+import { usePlayerStore, Track } from '../../src/store/usePlayerStore';
+import { playTrack } from '../../src/services/AudioService';
 
 const SearchScreen = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<YouTubeItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const { setCurrentTrack, setQueue, setIsPlaying } = usePlayerStore();
+  const { setCurrentTrack, setQueue, setIsPlaying, setProgress, setDuration } = usePlayerStore();
 
 
   const handleSearch = async () => {
@@ -36,9 +36,13 @@ const SearchScreen = () => {
         artwork: item.thumbnail,
       };
 
-      await TrackPlayer.reset();
-      await TrackPlayer.add([track]);
-      await TrackPlayer.play();
+      await playTrack(streamUrl, (status) => {
+        if (status.isLoaded) {
+          setProgress(status.positionMillis / 1000);
+          setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          setIsPlaying(status.isPlaying);
+        }
+      });
       
       setCurrentTrack(track);
       setQueue([track]);

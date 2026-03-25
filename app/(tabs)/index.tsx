@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, FlatList, Image } from 'react-native';
 import { Heart, Flame, Play, Disc } from 'lucide-react-native';
 import { searchMusic, getStreamUrl, YouTubeItem } from '../../src/api/musicApi';
-import { usePlayerStore } from '../../src/store/usePlayerStore';
-import TrackPlayer, { Track } from 'react-native-track-player';
+import { usePlayerStore, Track } from '../../src/store/usePlayerStore';
+import { playTrack } from '../../src/services/AudioService';
 
 const CATEGORIES = ['Trending', 'Chill', 'Workout', 'Party', 'Focus', 'Sleep'];
 
 export default function HomeScreen() {
   const [trending, setTrending] = useState<YouTubeItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const { setCurrentTrack, setQueue, setIsPlaying } = usePlayerStore();
+  const { setCurrentTrack, setQueue, setIsPlaying, setProgress, setDuration } = usePlayerStore();
 
   useEffect(() => {
     fetchDiscovery();
@@ -39,9 +39,13 @@ export default function HomeScreen() {
         artwork: item.thumbnail,
       };
 
-      await TrackPlayer.reset();
-      await TrackPlayer.add([track]);
-      await TrackPlayer.play();
+      await playTrack(streamUrl, (status) => {
+        if (status.isLoaded) {
+          setProgress(status.positionMillis / 1000);
+          setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+          setIsPlaying(status.isPlaying);
+        }
+      });
       
       setCurrentTrack(track);
       setQueue([track]);

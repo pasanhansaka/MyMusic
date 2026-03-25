@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, Dimensions, ScrollView, Alert } from 'react-native';
 import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, ChevronDown, Music2, Clock } from 'lucide-react-native';
 import { usePlayerStore } from '../../store/usePlayerStore';
-import TrackPlayer from 'react-native-track-player';
+import { pauseTrack, resumeTrack, seekTo, playTrack } from '../../services/AudioService';
 import Slider from '@react-native-community/slider';
-import Animated, { useAnimatedStyle, withRepeat, withTiming, withSequence, useSharedValue, useAnimatedGestureHandler, runOnJS } from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, withRepeat, withTiming, withSequence, useSharedValue, runOnJS } from 'react-native-reanimated';
+import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { fetchLyrics, getFormattedLyrics } from '../../services/LyricsService';
 
 
@@ -34,30 +34,31 @@ const WaveformBar = ({ index }: { index: number }) => {
 };
 
 const NowPlaying = ({ onClose }: { onClose: () => void }) => {
-  const { currentTrack, isPlaying, setIsPlaying, progress, duration, setSleepTimer, sleepTimer } = usePlayerStore();
+  const { 
+    currentTrack, isPlaying, setIsPlaying, progress, duration, 
+    setSleepTimer, sleepTimer, nextTrack, previousTrack, setProgress, setDuration
+  } = usePlayerStore();
   const [showLyrics, setShowLyrics] = useState(false);
-  const [lyrics, setLyrics] = useState([]);
+  const [lyrics, setLyrics] = useState<string[]>([]);
 
   // Gesture handling
   const translateY = useSharedValue(0);
 
-  const gestureHandler = useAnimatedGestureHandler({
-    onStart: (_, ctx: any) => {
-      ctx.startY = translateY.value;
-    },
-    onActive: (event, ctx: any) => {
-      translateY.value = Math.max(0, ctx.startY + event.translationY);
-    },
-    onEnd: (event) => {
-      if (event.translationY > 150 || event.velocityY > 1000) {
+  const onGestureEvent = (event: PanGestureHandlerGestureEvent) => {
+    translateY.value = Math.max(0, event.nativeEvent.translationY);
+  };
+
+  const onHandlerStateChange = (event: any) => {
+    if (event.nativeEvent.state === 5) { // END
+      if (event.nativeEvent.translationY > 150) {
         translateY.value = withTiming(height, {}, () => {
           runOnJS(onClose)();
         });
       } else {
         translateY.value = withTiming(0);
       }
-    },
-  });
+    }
+  };
 
   const animatedPlayerStyle = useAnimatedStyle(() => {
     return {
@@ -72,6 +73,7 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
   }, [currentTrack]);
 
   const loadLyrics = async () => {
+    if (!currentTrack) return;
     const raw = await fetchLyrics(currentTrack.title, currentTrack.artist);
     setLyrics(getFormattedLyrics(raw));
   };
@@ -94,16 +96,16 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
 
   const togglePlayback = async () => {
     if (isPlaying) {
-      await TrackPlayer.pause();
+      await pauseTrack();
       setIsPlaying(false);
     } else {
-      await TrackPlayer.play();
+      await resumeTrack();
       setIsPlaying(true);
     }
   };
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
       <Animated.View style={[{ flex: 1 }, animatedPlayerStyle]} className="bg-dark px-6 pt-12">
         <View className="flex-row justify-between items-center">
           <TouchableOpacity onPress={onClose} className="mb-4">
@@ -164,7 +166,7 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
             maximumTrackTintColor="#333333"
             thumbTintColor="#FF0000"
             onSlidingComplete={async (value) => {
-              await TrackPlayer.seekTo(value);
+              await seekTo(value * 1000); // conversion to millis
             }}
           />
           <View className="flex-row justify-between px-1">
@@ -177,7 +179,17 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
           <TouchableOpacity>
             <Shuffle size={24} color="#555555" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => TrackPlayer.skipToPrevious()}>
+          <TouchableOpacity onPress={async () => {
+            previousTrack();
+            const { currentTrack: newTrack } = usePlayerStore.getState();
+            if (newTrack) await playTrack(newTrack.url, (status) => {
+              if (status.isLoaded) {
+                setProgress(status.positionMillis / 1000);
+                setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+                setIsPlaying(status.isPlaying);
+              }
+            });
+          }}>
             <SkipBack size={32} color="#FFFFFF" fill="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity 
@@ -190,7 +202,17 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
               <Play size={40} color="#FFFFFF" fill="#FFFFFF" />
             )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>
+          <TouchableOpacity onPress={async () => {
+            nextTrack();
+            const { currentTrack: newTrack } = usePlayerStore.getState();
+            if (newTrack) await playTrack(newTrack.url, (status) => {
+              if (status.isLoaded) {
+                setProgress(status.positionMillis / 1000);
+                setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
+                setIsPlaying(status.isPlaying);
+              }
+            });
+          }}>
             <SkipForward size={32} color="#FFFFFF" fill="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity>
