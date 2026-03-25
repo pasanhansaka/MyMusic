@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 // Automatically detect the development server IP
 const debuggerHost = Constants.expoConfig?.hostUri;
 const ip = debuggerHost ? debuggerHost.split(':')[0] : '192.168.1.100';
-const API_BASE_URL = `https://mymusic-production.up.railway.app/api`;
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:3000/api';
 
 console.log('API Base URL:', API_BASE_URL);
 

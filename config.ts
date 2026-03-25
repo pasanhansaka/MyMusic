@@ -1,2 +1,2 @@
-export const JAMENDO_CLIENT_ID = '0f9bae11081f1feb64f697144605595e';
-export const JAMENDO_BASE_URL = 'https://api.jamendo.com/v3.0';
+export const JAMENDO_CLIENT_ID = process.env.EXPO_PUBLIC_JAMENDO_CLIENT_ID || '';
+export const JAMENDO_BASE_URL = process.env.EXPO_PUBLIC_JAMENDO_BASE_URL || 'https://api.jamendo.com/v3.0';

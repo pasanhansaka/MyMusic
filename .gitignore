@@ -31,7 +31,10 @@ yarn-error.*
 *.pem
 
 # local env files
-.env*.local
+.env
+.env.local
+.env.*
+!.env.example
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +44,23 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Secrets and sensitive data
+*.pem
+*.key
+*.jks
+*.p12
+*.p8
+*.mobileprovision
+
+# Firebase / Google Services (if applicable)
+android/app/google-services.json
+ios/GoogleService-Info.plist
+
+# Debug and Logs
+*.log
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.metro-health-check*
+
