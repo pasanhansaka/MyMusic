@@ -1,11 +1,11 @@
-# 🎵 Thorn Music
+# 🎵 My Music
 
 [![React Native](https://img.shields.io/badge/React_Native-0.81-61DAFB?logo=react&logoColor=black)](https://reactnative.dev/)
 [![Expo](https://img.shields.io/badge/Expo-54.0-000020?logo=expo&logoColor=white)](https://expo.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-Private-red.svg)](https://github.com/pasanhansaka/MyMusic)
 
-**Thorn Music** is a premium, feature-rich music streaming application designed for the modern listener. Built with **React Native** and **Expo**, it delivers a seamless audio experience with a stunning dark-themed UI, intelligent search, and robust offline capabilities.
+**My Music** is a premium, feature-rich music streaming application designed for the modern listener. Built with **React Native** and **Expo**, it delivers a seamless audio experience with a stunning dark-themed UI, intelligent search, and robust offline capabilities.
 
 ---
 
