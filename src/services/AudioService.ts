@@ -1,17 +1,14 @@
-import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
+import { useAudioPlayer, AudioMode, setAudioModeAsync, createAudioPlayer } from 'expo-audio';
 
-let sound: Audio.Sound | null = null;
+let player: any = null;
 
 export const setupAudio = async () => {
   try {
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      staysActiveInBackground: true,
-      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
-      playsInSilentModeIOS: true,
-      shouldDuckAndroid: true,
-      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-      playThroughEarpieceAndroid: false,
+    await setAudioModeAsync({
+      shouldPlayInBackground: true,
+      playsInSilentMode: true,
+      interruptionMode: 'doNotMix',
+      shouldRouteThroughEarpiece: false,
     });
   } catch (error) {
     console.error('Error setting up audio mode:', error);
@@ -20,18 +17,19 @@ export const setupAudio = async () => {
 
 export const playTrack = async (url: string, onUpdate?: (status: any) => void) => {
   try {
-    if (sound) {
-      await sound.unloadAsync();
+    if (player) {
+      player.pause();
     }
 
-    const { sound: newSound } = await Audio.Sound.createAsync(
-      { uri: url },
-      { shouldPlay: true },
-      onUpdate
-    );
+    player = createAudioPlayer(url);
     
-    sound = newSound;
-    return sound;
+    // Add status listener for updates
+    if (onUpdate) {
+      player.addListener('playbackStatusUpdate', onUpdate);
+    }
+
+    player.play();
+    return player;
   } catch (error) {
     console.error('Error playing track:', error);
     throw error;
@@ -39,33 +37,32 @@ export const playTrack = async (url: string, onUpdate?: (status: any) => void) =
 };
 
 export const pauseTrack = async () => {
-  if (sound) {
-    await sound.pauseAsync();
+  if (player) {
+    player.pause();
   }
 };
 
 export const resumeTrack = async () => {
-  if (sound) {
-    await sound.playAsync();
+  if (player) {
+    player.play();
   }
 };
 
 export const stopTrack = async () => {
-  if (sound) {
-    await sound.stopAsync();
-    await sound.unloadAsync();
-    sound = null;
+  if (player) {
+    player.pause();
+    player = null;
   }
 };
 
 export const setVolume = async (volume: number) => {
-  if (sound) {
-    await sound.setVolumeAsync(volume);
+  if (player) {
+    player.setVolume(volume);
   }
 };
 
 export const seekTo = async (millis: number) => {
-  if (sound) {
-    await sound.setPositionAsync(millis);
+  if (player) {
+    await player.seekTo(millis / 1000);
   }
 };

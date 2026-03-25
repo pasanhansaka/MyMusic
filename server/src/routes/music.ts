@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { searchMusic, getPlaylistTracks } from '../services/youtube';
 import { getStreamUrl, getTrackInfo } from '../services/extractor';
-import { savePlaylist, getPlaylists } from '../services/supabase';
 
 const router = Router();
 
@@ -56,26 +55,5 @@ router.get('/info/:id', async (req, res) => {
   }
 });
 
-// Create Playlist
-router.post('/playlist', async (req, res) => {
-  const { userId, name, tracks } = req.body;
-  try {
-    const data = await savePlaylist(userId, name, tracks);
-    res.json(data);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get User Playlists
-router.get('/playlists/:userId', async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const data = await getPlaylists(userId);
-    res.json(data);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 export default router;

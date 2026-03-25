@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api'; // Update with your server IP for physical devices
+import Constants from 'expo-constants';
+
+// Automatically detect the development server IP
+const debuggerHost = Constants.expoConfig?.hostUri;
+const ip = debuggerHost ? debuggerHost.split(':')[0] : '192.168.1.100'; 
+const API_BASE_URL = `http://${ip}:3000/api`;
+
+console.log('API Base URL:', API_BASE_URL);
 
 export interface YouTubeItem {
   id: string;

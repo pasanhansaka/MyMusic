@@ -4,31 +4,16 @@ import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, ChevronDown, Music
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { pauseTrack, resumeTrack, seekTo, playTrack } from '../../services/AudioService';
 import Slider from '@react-native-community/slider';
-import Animated, { useAnimatedStyle, withRepeat, withTiming, withSequence, useSharedValue, runOnJS } from 'react-native-reanimated';
-import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import { fetchLyrics, getFormattedLyrics } from '../../services/LyricsService';
 
 
 const { width, height } = Dimensions.get('window');
 
 const WaveformBar = ({ index }: { index: number }) => {
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      height: withRepeat(
-        withSequence(
-          withTiming(Math.random() * 40 + 10, { duration: 500 }),
-          withTiming(Math.random() * 40 + 10, { duration: 500 })
-        ),
-        -1,
-        true
-      ),
-    };
-  });
-
   return (
-    <Animated.View 
+    <View 
       className="bg-red-600 w-1 mx-0.5 rounded-full"
-      style={animatedStyle}
+      style={{ height: 20 }} // Static height for now
     />
   );
 };
@@ -40,31 +25,6 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
   } = usePlayerStore();
   const [showLyrics, setShowLyrics] = useState(false);
   const [lyrics, setLyrics] = useState<string[]>([]);
-
-  // Gesture handling
-  const translateY = useSharedValue(0);
-
-  const onGestureEvent = (event: PanGestureHandlerGestureEvent) => {
-    translateY.value = Math.max(0, event.nativeEvent.translationY);
-  };
-
-  const onHandlerStateChange = (event: any) => {
-    if (event.nativeEvent.state === 5) { // END
-      if (event.nativeEvent.translationY > 150) {
-        translateY.value = withTiming(height, {}, () => {
-          runOnJS(onClose)();
-        });
-      } else {
-        translateY.value = withTiming(0);
-      }
-    }
-  };
-
-  const animatedPlayerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: translateY.value }],
-    };
-  });
 
   useEffect(() => {
     if (currentTrack) {
@@ -105,8 +65,7 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-      <Animated.View style={[{ flex: 1 }, animatedPlayerStyle]} className="bg-dark px-6 pt-12">
+    <View style={{ flex: 1 }} className="bg-dark px-6 pt-12">
         <View className="flex-row justify-between items-center">
           <TouchableOpacity onPress={onClose} className="mb-4">
             <ChevronDown size={32} color="#FFFFFF" />
@@ -184,9 +143,9 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
             const { currentTrack: newTrack } = usePlayerStore.getState();
             if (newTrack) await playTrack(newTrack.url, (status) => {
               if (status.isLoaded) {
-                setProgress(status.positionMillis / 1000);
-                setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
-                setIsPlaying(status.isPlaying);
+                setProgress(status.currentTime);
+                setDuration(status.duration);
+                setIsPlaying(status.playing);
               }
             });
           }}>
@@ -207,9 +166,9 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
             const { currentTrack: newTrack } = usePlayerStore.getState();
             if (newTrack) await playTrack(newTrack.url, (status) => {
               if (status.isLoaded) {
-                setProgress(status.positionMillis / 1000);
-                setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
-                setIsPlaying(status.isPlaying);
+                setProgress(status.currentTime);
+                setDuration(status.duration);
+                setIsPlaying(status.playing);
               }
             });
           }}>
@@ -219,8 +178,7 @@ const NowPlaying = ({ onClose }: { onClose: () => void }) => {
             <Repeat size={24} color="#555555" />
           </TouchableOpacity>
         </View>
-      </Animated.View>
-    </PanGestureHandler>
+    </View>
   );
 };
 

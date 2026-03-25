@@ -21,8 +21,14 @@ export default function HomeScreen() {
     try {
       const results = await searchMusic('Top Hits 2024');
       setTrending(results);
-    } catch (error) {
-      console.error('Discovery error:', error);
+    } catch (error: any) {
+      console.error('Discovery error:', error.message);
+      if (error.response) {
+        console.error('Data:', error.response.data);
+        console.error('Status:', error.response.status);
+      } else if (error.request) {
+        console.error('Request made but no response received. Ensure your backend is running on port 3000 and matches this IP.');
+      }
     } finally {
       setLoading(false);
     }
@@ -41,9 +47,9 @@ export default function HomeScreen() {
 
       await playTrack(streamUrl, (status) => {
         if (status.isLoaded) {
-          setProgress(status.positionMillis / 1000);
-          setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
-          setIsPlaying(status.isPlaying);
+          setProgress(status.currentTime);
+          setDuration(status.duration);
+          setIsPlaying(status.playing);
         }
       });
       

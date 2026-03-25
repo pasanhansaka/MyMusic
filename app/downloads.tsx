@@ -30,9 +30,9 @@ const DownloadsScreen = () => {
 
     await playTrack(item.localUri, (status) => {
       if (status.isLoaded) {
-        setProgress(status.positionMillis / 1000);
-        setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
-        setIsPlaying(status.isPlaying);
+        setProgress(status.currentTime);
+        setDuration(status.duration);
+        setIsPlaying(status.playing);
       }
     });
     

@@ -50,9 +50,9 @@ const MiniPlayer = ({ onOpenNowPlaying }: { onOpenNowPlaying: () => void }) => {
           const { currentTrack: newTrack } = usePlayerStore.getState();
           if (newTrack) await playTrack(newTrack.url, (status) => {
             if (status.isLoaded) {
-              setProgress(status.positionMillis / 1000);
-              setDuration(status.durationMillis ? status.durationMillis / 1000 : 0);
-              setIsPlaying(status.isPlaying);
+              setProgress(status.currentTime);
+              setDuration(status.duration);
+              setIsPlaying(status.playing);
             }
           });
         }}>
